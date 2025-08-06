@@ -7,5 +7,9 @@ openai==1.10.0
 zep-cloud==2.0.0
 python-multipart==0.0.6
 supabase==2.3.0
-gotrue==2.4.1
+gotrue==2.9.3
+postgrest==0.14.0
+realtime==1.0.0
+storage3==0.3.0
+
 httpx==0.24.1
