@@ -24,6 +24,11 @@ supabase = create_client(supabase_url, supabase_key)
 AGENT_ID = os.environ.get("AGENT_ID", "default-agent")
 APP_NAME = os.environ.get("FLY_APP_NAME", AGENT_ID)
 
+
+if os.getenv("RUN_REGISTRATION", "true").lower() == "true":
+    import register_agent
+
+
 # Attempt to register agent
 try:
     response = supabase.table("agents_registry").upsert({
