@@ -37,6 +37,11 @@ try:
         "priority": 5,
         "status": "deployed",
         "last_triggered": datetime.utcnow().isoformat()
+        "created_at": datetime.utcnow().isoformat(),
+        "updated_at": datetime.utcnow().isoformat(),
+        "request_count": 0,
+        "failure_count": 0,
+        "total_duration_ms": 0
     }).execute()
     print(f"✅ Agent {AGENT_ID} registered in Supabase.")
 except Exception as e:
