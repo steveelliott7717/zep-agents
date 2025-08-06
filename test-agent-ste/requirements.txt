@@ -11,6 +11,7 @@ gotrue==2.9.3
 postgrest==0.13.1
 
 realtime==1.0.0
-storage3==0.3.0
+storage3==0.7.0
+
 
 httpx==0.24.1
