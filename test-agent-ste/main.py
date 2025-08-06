@@ -18,7 +18,7 @@ agent = None
 
 # Initialize Supabase client
 supabase_url = os.environ.get("SUPABASE_URL")
-supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+supabase_key = os.environ.get("SUPABASE_KEY")
 supabase = create_client(supabase_url, supabase_key)
 
 AGENT_ID = os.environ.get("AGENT_ID", "default-agent")
