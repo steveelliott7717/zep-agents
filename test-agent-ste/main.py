@@ -36,7 +36,7 @@ try:
         "app_name": APP_NAME,
         "priority": 5,
         "status": "deployed",
-        "last_triggered": datetime.utcnow().isoformat()
+        "last_triggered": datetime.utcnow().isoformat(),
         "created_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),
         "request_count": 0,
