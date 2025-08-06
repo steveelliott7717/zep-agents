@@ -1,0 +1,23 @@
+# docker-compose.yml for local testing with Redis
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  controller:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - FLY_API_TOKEN=${FLY_API_TOKEN}
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:

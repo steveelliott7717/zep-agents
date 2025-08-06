@@ -25,5 +25,8 @@ EXPOSE 8080
 # Set environment variable for port
 ENV PORT=8080
 
+RUN python register_agent.py
+
 # Run the application with explicit command
 CMD ["python", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+

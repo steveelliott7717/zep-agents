@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.env:2
+.env.*
+*.sqlite3
+test-agent-ste/.env
+
+# Secrets
+config.py
+*.key
+*.pem
+
+# VSCode or PyCharm
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

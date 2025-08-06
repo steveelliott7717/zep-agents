@@ -7,11 +7,35 @@ import asyncio
 from contextlib import asynccontextmanager
 import logging
 import os
+from supabase_plugin import register_supabase_plugins
+from supabase import create_client
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
 # Initialize agent instance variable
 agent = None
+
+# Initialize Supabase client
+supabase_url = os.environ.get("SUPABASE_URL")
+supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+supabase = create_client(supabase_url, supabase_key)
+
+AGENT_ID = os.environ.get("AGENT_ID", "default-agent")
+APP_NAME = os.environ.get("FLY_APP_NAME", AGENT_ID)
+
+# Attempt to register agent
+try:
+    response = supabase.table("agents_registry").upsert({
+        "agent_id": AGENT_ID,
+        "app_name": APP_NAME,
+        "priority": 5,
+        "status": "deployed",
+        "last_triggered": datetime.utcnow().isoformat()
+    }).execute()
+    print(f"✅ Agent {AGENT_ID} registered in Supabase.")
+except Exception as e:
+    print(f"⚠️ Failed to register agent in Supabase: {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -62,6 +86,10 @@ async def lifespan(app: FastAPI):
     # Initialize the agent
     await agent.initialize()
     logging.info(f"✅ Agent {agent_id} initialized successfully")
+
+    # Register Supabase plugins if credentials are available
+    if os.environ.get("SUPABASE_URL") and os.environ.get("SUPABASE_KEY"):
+        register_supabase_plugins(agent)
     
     yield
     
@@ -140,4 +168,56 @@ async def share_memory(request: Request):
     
     await agent.share_memory(fact, groups)
     return {"status": "success", "shared_with": groups}
+
+@app.post("/supabase/write")
+async def write_to_supabase(request: Request):
+    """Write data to a Supabase table"""
+    if not agent:
+        return {"error": "Agent not initialized"}, 503
+    
+    data = await request.json()
+    result = await agent.process({
+        "type": "supabase_write",
+        "data": data
+    })
+    return result
+
+@app.post("/supabase/read")
+async def read_from_supabase(request: Request):
+    """Read data from a Supabase table"""
+    if not agent:
+        return {"error": "Agent not initialized"}, 503
+    
+    data = await request.json()
+    result = await agent.process({
+        "type": "supabase_read",
+        "data": data
+    })
+    return result
+
+@app.post("/supabase/process")
+async def process_supabase_data(request: Request):
+    """Process data from one table and write insights to another"""
+    if not agent:
+        return {"error": "Agent not initialized"}, 503
+    
+    data = await request.json()
+    result = await agent.process({
+        "type": "supabase_process",
+        "data": data
+    })
+    return result
+
+@app.post("/webhooks/supabase")
+async def handle_supabase_webhook(request: Request):
+    """Handle Supabase database webhooks"""
+    if not agent:
+        return {"error": "Agent not initialized"}, 503
+    
+    payload = await request.json()
+    result = await agent.process({
+        "type": "supabase_webhook",
+        "data": payload
+    })
+    return result
 
